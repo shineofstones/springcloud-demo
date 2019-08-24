@@ -1,0 +1,15 @@
+server:
+  port: 9091
+spring:
+  application:
+    #配置微服务名称
+    name: provider-server
+eureka:
+  client:
+    #当前微服务配置到注册中心是否注册注册中心
+    register-with-eureka: true
+    #配置注册中心地址
+    service-url:
+      defaultZone: http://order.qf.com:8080/eureka,http://www.qf.com:8082/eureka,http://user.qf.com:8081/eureka
+    #配置当前的微服务能否从注册中心获取其他的微服务
+    fetch-registry: true

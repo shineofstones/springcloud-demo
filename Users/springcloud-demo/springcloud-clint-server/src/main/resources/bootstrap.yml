@@ -1,0 +1,12 @@
+spring:
+  cloud:
+    config:
+      uri: http://localhost:18800
+      #配置文件的名称
+      name: application
+      #配置文件的后缀
+      profile: default
+      #分支的名字
+      label: master
+server:
+  port: 19999

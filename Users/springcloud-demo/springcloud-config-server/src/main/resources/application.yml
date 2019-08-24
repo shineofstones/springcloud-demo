@@ -1,0 +1,10 @@
+server:
+  port: 18800
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/wanleilei/config.git
+#        native:
+#          search-locations:

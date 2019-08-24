@@ -1,0 +1,54 @@
+server:
+  port: 16666
+spring:
+  application:
+    name: gateway-server
+  cloud:
+    gateway:
+      #配置相应的路由规则
+      routes:
+      #路由id，唯一即可
+      - id: rabbin-server-gateway
+        #当前路由路径下，路由的微服务名称，并使用负载均衡策略进行路由访问
+        uri: lb://CONSUMER-RIBBON-SERVER
+        #路由规则，请求找对应的微服务
+        predicates:
+        - Path=/ribbon/**
+        #限流过滤器
+        filters:
+        - name: Hystrix
+          args:
+            name: default
+            fallbackUri: forward:/fallback
+        - name: RequestRateLimiter
+          args:
+            #配置令牌桶的匹配规则，限流策略，请求地址还是其他限流
+            key-resolver: '#{@remoteAddrKeyResolver}'
+            #每秒丢入令牌数量
+            redis-rate-limiter.replenishRate: 1
+            #令牌桶最大容量
+            redis-rate-limiter.burstCapacity: 3
+
+
+      - id: feign-server-gateway
+        uri: lb://FEIGN-SERVER
+        predicates:
+        - Path=/feign/**
+        #过滤器
+        filters:
+        - name: RequestRateLimiter
+          args:
+            key-resolver: '#{@remoteAddrKeyResolver}'
+            redis-rate-limiter.replenishRate: 1
+            redis-rate-limiter.burstCapacity: 3
+        - name: Hystrix
+          args:
+            name: default
+            fallbackUri: forward:/fallback
+  redis:
+    host: 47.96.234.162
+    password: java1904
+eureka:
+  client:
+    service-url:
+      defaultZone: http://www.qf.com:8082/eureka
